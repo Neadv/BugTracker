@@ -1,0 +1,10 @@
+# Asp Net Core Server
+bin/
+obj/
+wwwroot/
+.vs/
+.vscode/
+
+# React Client
+node_modules/
+build/
