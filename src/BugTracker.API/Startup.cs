@@ -1,6 +1,11 @@
 using BugTracker.API.Data;
 using BugTracker.API.Extensions;
+using BugTracker.API.Infrastructure.Behaviors;
+using BugTracker.API.Infrastructure.Filters;
 using BugTracker.API.Models;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Text.Json.Serialization;
 
 namespace BugTracker.API
 {
@@ -22,7 +28,12 @@ namespace BugTracker.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddControllers(options => options.Filters.Add(typeof(HttpGlobalExceptionFilter)))
+                .AddJsonOptions(opts =>
+                {
+                    opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                });
 
             services.AddDbContext<ApplicationContext>(opts =>
             {
@@ -39,6 +50,11 @@ namespace BugTracker.API
                 opts.Password.RequiredLength = 6;
             })
                 .AddEntityFrameworkStores<ApplicationContext>();
+
+            services.AddMediatR(typeof(Startup).Assembly);
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+
+            services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
 
             services.AddSwagger();
         }
