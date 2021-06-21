@@ -29,7 +29,16 @@ namespace BugTracker.API
                 opts.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
+            {
+                opts.User.RequireUniqueEmail = true;
+                opts.Password.RequireDigit = true;
+                opts.Password.RequireLowercase = true;
+                opts.Password.RequireUppercase = true;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequiredLength = 6;
+            })
+                .AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddSwagger();
         }
@@ -49,6 +58,11 @@ namespace BugTracker.API
             {
                 endpoints.MapControllers();
             });
+
+            if (Configuration.GetValue<bool>("SeedDatabase"))
+            {
+                app.SeedDatabase();
+            }
         }
     }
 }
