@@ -3,6 +3,7 @@ using BugTracker.API.Extensions;
 using BugTracker.API.Infrastructure.Behaviors;
 using BugTracker.API.Infrastructure.Filters;
 using BugTracker.API.Models;
+using BugTracker.API.Services;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
@@ -40,6 +41,8 @@ namespace BugTracker.API
                 opts.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddJwtAuthentication(Configuration);
+
             services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
@@ -56,6 +59,8 @@ namespace BugTracker.API
 
             services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
 
+            services.AddTransient<ITokenService, TokenService>();
+
             services.AddSwagger();
         }
 
@@ -69,6 +74,9 @@ namespace BugTracker.API
             app.UseRouting();
 
             app.UseSwaggerApp();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

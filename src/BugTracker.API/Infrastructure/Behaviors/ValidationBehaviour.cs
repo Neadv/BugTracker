@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace BugTracker.API.Infrastructure.Behaviors
 {
-    public class ValidationBahaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
-        private readonly ILogger<ValidationBahaviour<TRequest, TResponse>> _logger;
+        private readonly ILogger<ValidationBehaviour<TRequest, TResponse>> _logger;
 
-        public ValidationBahaviour(IEnumerable<IValidator<TRequest>> validators,
-                                   ILogger<ValidationBahaviour<TRequest, TResponse>> logger)
+        public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators,
+                                   ILogger<ValidationBehaviour<TRequest, TResponse>> logger)
         {
             this._validators = validators;
             this._logger = logger;
