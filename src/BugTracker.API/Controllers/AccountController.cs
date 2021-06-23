@@ -30,5 +30,19 @@ namespace BugTracker.API.Controllers
             return Ok(tokenResponse);
         }
 
+        [HttpPost("register")]
+        public async Task<ActionResult> Register(RegisterCommand registerCommand)
+        {
+            var result = await _mediator.Send(registerCommand);
+            if (!result.Succeeded)
+            {
+                return Conflict(new
+                {
+                    Status = StatusCodes.Status409Conflict,
+                    Errors = result.Errors
+                });
+            }
+            return Ok(result.Token);
+        }
     }
 }

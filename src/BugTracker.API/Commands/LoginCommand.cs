@@ -14,40 +14,29 @@ using System.Threading.Tasks;
 
 namespace BugTracker.API.Commands
 {
-    public class LoginCommand : IRequest<TokenResponse>
+    public class LoginCommand : IRequest<TokenResult>
     {
         public string Username { get; set; }
         public string Password { get; set; }
 
-        public class LoginHandler : IRequestHandler<LoginCommand, TokenResponse>
+        public class LoginHandler : IRequestHandler<LoginCommand, TokenResult>
         {
             private readonly UserManager<ApplicationUser> _userManager;
-            private readonly ITokenService _tokenService;
+            private readonly IAuthorizationService _authorizationService;
 
-            public LoginHandler(UserManager<ApplicationUser> userManager, ITokenService tokenService)
+            public LoginHandler(UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService)
             {
                 _userManager = userManager;
-                _tokenService = tokenService;
+                _authorizationService = authorizationService;
             }
 
 
-            public async Task<TokenResponse> Handle(LoginCommand request, CancellationToken cancellationToken)
+            public async Task<TokenResult> Handle(LoginCommand request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByNameAsync(request.Username);
                 if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
                 {
-                    var roles = await _userManager.GetRolesAsync(user);
-                    var accessToken = _tokenService.GenerateJwt(user, roles);
-                    var refreshToken = _tokenService.GenerateRefreshToken();
-                    
-                    user.RefreshTokens.Add(refreshToken);
-                    await _userManager.UpdateAsync(user);
-
-                    return new TokenResponse
-                    {
-                        AccessToken = accessToken,
-                        RefreshToken = refreshToken.Token
-                    };
+                    return await _authorizationService.AuthorizeAsync(user);
                 }
                 return null;
             }

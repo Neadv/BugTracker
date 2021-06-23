@@ -59,6 +59,7 @@ namespace BugTracker.API
 
             services.AddValidatorsFromAssembly(typeof(Startup).Assembly);
 
+            services.AddScoped<IAuthorizationService, AuthorizationService>();
             services.AddTransient<ITokenService, TokenService>();
 
             services.AddSwagger();
