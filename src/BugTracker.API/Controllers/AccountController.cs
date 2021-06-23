@@ -1,5 +1,6 @@
 ﻿using BugTracker.API.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -43,6 +44,23 @@ namespace BugTracker.API.Controllers
                 });
             }
             return Ok(result.Token);
+        }
+
+        [HttpPost("refresh")]
+        public async Task<ActionResult> Refresh(RefreshCommand refreshCommand)
+        {
+            var token = await _mediator.Send(refreshCommand);
+            if (token == null)
+                return Unauthorized(new { Status = StatusCodes.Status401Unauthorized, Error = "Invalid access or refresh token" });
+            return Ok(token);
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout(LogoutCommand logoutCommand)
+        {
+            await _mediator.Send(logoutCommand);
+            return Ok();
         }
     }
 }

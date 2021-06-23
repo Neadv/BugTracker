@@ -41,18 +41,8 @@ namespace BugTracker.API
                 opts.UseNpgsql(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddCustomIdentity();
             services.AddJwtAuthentication(Configuration);
-
-            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
-            {
-                opts.User.RequireUniqueEmail = true;
-                opts.Password.RequireDigit = true;
-                opts.Password.RequireLowercase = true;
-                opts.Password.RequireUppercase = true;
-                opts.Password.RequireNonAlphanumeric = false;
-                opts.Password.RequiredLength = 6;
-            })
-                .AddEntityFrameworkStores<ApplicationContext>();
 
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
