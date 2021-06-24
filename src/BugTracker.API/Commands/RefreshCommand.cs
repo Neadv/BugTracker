@@ -45,11 +45,14 @@ namespace BugTracker.API.Commands
                 {
                     return null;
                 }
-                var user = await _userManager.Users.Where(u => u.UserName == claimsPrincipal.Identity.Name).Include(u => u.RefreshTokens).FirstOrDefaultAsync();
-                RefreshToken refreshToken = await _authorizationService.RemoveRefreshToken(request.RefreshToken, user);
-                
+
+                RefreshToken refreshToken = await _authorizationService.RemoveRefreshToken(claimsPrincipal.Identity.Name, request.RefreshToken);
+
                 if (refreshToken != null && refreshToken.Active)
+                {
+                    var user = await _userManager.FindByNameAsync(claimsPrincipal.Identity.Name);
                     return await _authorizationService.AuthorizeAsync(user);
+                }
 
                 return null;
             }
