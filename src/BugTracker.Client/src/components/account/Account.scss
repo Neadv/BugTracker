@@ -1,0 +1,14 @@
+.account-wrapper{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+
+    .card{
+        min-width: 600px;
+    }
+
+    h3{
+        font-family: 'Open sans';
+    }
+}
