@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { login } from "../services/authService";
+import { loadUser, login } from "../services/authService";
 
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     error: null,
     loading: false,
-    user: null
+    user: loadUser()
   },
   reducers: {
     startAuthorize(state, action) {
@@ -42,10 +42,10 @@ export const loginUser = (username, password) => (
   async dispatch => {
     dispatch(startAuthorize());
     const result = await login(username, password);
-    if (result){
-      dispatch(authorized(result));
+    if (result.succeeded){
+      dispatch(authorized(result.user));
     } else {
-      dispatch(authorizeError('error'));
+      dispatch(authorizeError(result.error));
     }
   }
 )
