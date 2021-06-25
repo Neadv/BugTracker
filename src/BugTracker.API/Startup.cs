@@ -53,6 +53,7 @@ namespace BugTracker.API
             services.AddTransient<ITokenService, TokenService>();
 
             services.AddSwagger();
+            services.AddCors();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -63,6 +64,13 @@ namespace BugTracker.API
             }
 
             app.UseRouting();
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyMethod();
+                builder.AllowAnyHeader();
+                builder.AllowAnyOrigin();
+            });
 
             app.UseSwaggerApp();
 

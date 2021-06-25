@@ -2,9 +2,10 @@ import { useFormik } from "formik";
 import { Form, Button } from "react-bootstrap";
 import * as Yup from 'yup';
 
-export function Login() {
+export function Login({ callback }) {
   const handleSubmit = values => {
     alert(JSON.stringify(values, null, 2));
+    callback(values.username, values.password);
   };
   
   const formik = useFormik({
