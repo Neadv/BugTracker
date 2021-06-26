@@ -26,8 +26,9 @@ export function login(username, password) {
 
 export function logout() {
   const token = getToken();
+  clearToken();
   return api.post('account/logout', {
-    refreshToken: token.refreshToken
+    refreshToken: token?.refreshToken
   });
 }
 
@@ -43,16 +44,16 @@ export function loadUser() {
 
 export function setRefreshInterceptor() {
   const interceptor = api.interceptors.response.use(res => res, error => {
-    const token = getToken();
-    if (error.response?.status !== 401 || !token) {
+    if (error.response?.status !== 401) {
       return Promise.reject(error);
     }
-
+    
     api.interceptors.response.eject(interceptor);
-
+    
+    const token = getToken();
     return api.post('account/refresh', {
-      expiredToken: token.accessToken,
-      refreshToken: token.refreshToken
+      expiredToken: token?.accessToken,
+      refreshToken: token?.refreshToken
     }).then(response => {
       saveToken(response.data);
       setAuthorizationHeader(response.data.accessToken);
@@ -60,6 +61,7 @@ export function setRefreshInterceptor() {
       return axios(error.response.config);
     }).catch(error => {
       clearToken();
+      window.location.replace('/account/logout');
     }).finally(setRefreshInterceptor);
   });
 

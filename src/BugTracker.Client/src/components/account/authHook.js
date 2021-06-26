@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from "react-redux"
 import { clearUser, loginUser } from "../../data/authSlice";
-import { clearToken } from "../../services/tokenService";
 import { logout as authLogout } from "../../services/authService";
 
 export const useAuth = () => {
@@ -13,7 +12,6 @@ export const useAuth = () => {
 
   const logout = () => {
     authLogout();
-    clearToken();
     dispatch(clearUser());
   }
 

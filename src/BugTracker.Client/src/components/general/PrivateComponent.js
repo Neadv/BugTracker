@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { api } from "../../api/api";
-import { useAuth } from "../account/authHook";
+import { Link } from "react-router-dom";
 
 export const PrivateComponent = () => {
     const [message, setMessage] = useState(null);
@@ -8,11 +8,10 @@ export const PrivateComponent = () => {
         api.get('home').then(res => setMessage(res.data.message)).catch(e => setMessage('error'));
     };
 
-    const auth = useAuth();
     return (
         <>
             <h1>PrivateComponent</h1>
-            <button className="btn btn-primary" onClick={() => auth.logout()}>Logout</button>
+            <Link className="btn btn-primary" to='/account/logout'>Logout</Link>
             <button className="btn btn-primary" onClick={authorizedEndpoint}>Authorized Endpoint</button>
             <div>{message}</div>
         </>

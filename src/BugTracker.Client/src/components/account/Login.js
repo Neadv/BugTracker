@@ -1,14 +1,15 @@
 import { useFormik } from "formik";
 import { Form, Button } from "react-bootstrap";
+import { Redirect } from "react-router";
 import * as Yup from 'yup';
 
-export function Login({ login, error }) {
+export function Login({ login, error, isAuthorized }) {
   const handleSubmit = values => {
     login(values.username, values.password);
   };
-  
+
   const formik = useFormik({
-    initialValues:{
+    initialValues: {
       username: '',
       password: ''
     },
@@ -24,38 +25,38 @@ export function Login({ login, error }) {
     }),
     onSubmit: handleSubmit,
   });
-  
-  return (
+
+  return isAuthorized ? <Redirect to="/" /> : (
     <>
       <h3 className="text-center">Login</h3>
       <Form onSubmit={formik.handleSubmit}>
         {error && <div className="mb-2 text-danger">{error}</div>}
         <Form.Group>
           <Form.Label htmlFor="username">Username:</Form.Label>
-          <Form.Control 
+          <Form.Control
             id="username"
             type="text"
             value={formik.values.username}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             placeholder="Enter your username"
-            />
-            {formik.touched.username && formik.errors.username ? <Form.Text className="text-danger">{formik.errors.username}</Form.Text> : null}
+          />
+          {formik.touched.username && formik.errors.username ? <Form.Text className="text-danger">{formik.errors.username}</Form.Text> : null}
         </Form.Group>
         <Form.Group>
           <Form.Label htmlFor="password">Password:</Form.Label>
-          <Form.Control 
+          <Form.Control
             id="password"
             type="password"
             value={formik.values.password}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             placeholder="Enter your password"
-            />
-            {formik.touched.password && formik.errors.password ? <Form.Text className="text-danger">{formik.errors.password}</Form.Text> : null}
+          />
+          {formik.touched.password && formik.errors.password ? <Form.Text className="text-danger">{formik.errors.password}</Form.Text> : null}
         </Form.Group>
         <Button className="btn-block" type="submit">Sign In</Button>
       </Form>
     </>
-  );
+  )
 }
