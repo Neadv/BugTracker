@@ -22,10 +22,7 @@ namespace BugTracker.Api.Tests.Commands
             var userManager = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             userManager.Setup(u => u.CreateAsync(It.IsNotNull<ApplicationUser>(), registerCommand.Password)).ReturnsAsync(IdentityResult.Success);
 
-            var authService = new Mock<IAuthorizationService>();
-            authService.Setup(a => a.AuthorizeAsync(It.IsNotNull<ApplicationUser>())).ReturnsAsync(token);
-
-            var registerHandler = new RegisterCommand.RegisterHandler(userManager.Object, authService.Object);
+            var registerHandler = new RegisterCommand.RegisterHandler(userManager.Object);
 
             // Action
             var result = await registerHandler.Handle(registerCommand, new System.Threading.CancellationToken());
@@ -33,9 +30,7 @@ namespace BugTracker.Api.Tests.Commands
             // Assert
             Assert.NotNull(result);
             Assert.True(result.Succeeded);
-            Assert.Equal(token, result.Token);
             userManager.Verify(u => u.CreateAsync(It.IsNotNull<ApplicationUser>(), registerCommand.Password), Times.Once());
-            authService.Verify(a => a.AuthorizeAsync(It.IsNotNull<ApplicationUser>()), Times.Once());
         }
 
         [Fact]
@@ -49,9 +44,7 @@ namespace BugTracker.Api.Tests.Commands
             var userManager = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             userManager.Setup(u => u.CreateAsync(It.IsNotNull<ApplicationUser>(), registerCommand.Password)).ReturnsAsync(IdentityResult.Failed(error));
 
-            var authService = new Mock<IAuthorizationService>();
-
-            var registerHandler = new RegisterCommand.RegisterHandler(userManager.Object, authService.Object);
+            var registerHandler = new RegisterCommand.RegisterHandler(userManager.Object);
 
             // Action
             var result = await registerHandler.Handle(registerCommand, new System.Threading.CancellationToken());
@@ -61,7 +54,6 @@ namespace BugTracker.Api.Tests.Commands
             Assert.False(result.Succeeded);
             Assert.Contains(error.Description, result.Errors);
             userManager.Verify(u => u.CreateAsync(It.IsNotNull<ApplicationUser>(), registerCommand.Password), Times.Once());
-            authService.Verify(a => a.AuthorizeAsync(It.IsNotNull<ApplicationUser>()), Times.Never());
         }
     }
 }

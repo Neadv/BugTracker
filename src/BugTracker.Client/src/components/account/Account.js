@@ -15,7 +15,7 @@ export function Account() {
           <Card.Body>
             <Switch>
               <Route exact path="/account/login">
-                <Login login={auth.login} error={auth.error} isAuthorized={auth.isAuthorized}/>
+                <Login {...auth}/>
               </Route>
               <Route exact path="/account/register" />
               <PrivateRoute exact path="/account/logout" component={Logout} />

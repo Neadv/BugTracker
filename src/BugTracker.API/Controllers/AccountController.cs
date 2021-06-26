@@ -43,7 +43,7 @@ namespace BugTracker.API.Controllers
                     Errors = result.Errors
                 });
             }
-            return Ok(result.Token);
+            return Ok();
         }
 
         [HttpPost("refresh")]

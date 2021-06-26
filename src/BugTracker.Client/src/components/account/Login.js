@@ -3,7 +3,7 @@ import { Form, Button } from "react-bootstrap";
 import { Redirect } from "react-router";
 import * as Yup from 'yup';
 
-export function Login({ login, error, isAuthorized }) {
+export function Login({ login, error, isAuthorized, loading }) {
   const handleSubmit = values => {
     login(values.username, values.password);
   };
@@ -55,7 +55,7 @@ export function Login({ login, error, isAuthorized }) {
           />
           {formik.touched.password && formik.errors.password ? <Form.Text className="text-danger">{formik.errors.password}</Form.Text> : null}
         </Form.Group>
-        <Button className="btn-block" type="submit">Sign In</Button>
+        <Button className="btn-block" type="submit" disabled={loading}>Sign In</Button>
       </Form>
     </>
   )

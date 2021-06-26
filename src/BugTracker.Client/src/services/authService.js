@@ -44,13 +44,13 @@ export function loadUser() {
 
 export function setRefreshInterceptor() {
   const interceptor = api.interceptors.response.use(res => res, error => {
-    if (error.response?.status !== 401) {
+    const token = getToken();
+    if (error.response?.status !== 401 || !token) {
       return Promise.reject(error);
     }
-    
+
     api.interceptors.response.eject(interceptor);
-    
-    const token = getToken();
+
     return api.post('account/refresh', {
       expiredToken: token?.accessToken,
       refreshToken: token?.refreshToken
@@ -60,8 +60,8 @@ export function setRefreshInterceptor() {
       error.response.config.headers['Authorization'] = 'Bearer ' + response.data.accessToken;
       return axios(error.response.config);
     }).catch(error => {
-      clearToken();
       window.location.replace('/account/logout');
+      clearToken();
     }).finally(setRefreshInterceptor);
   });
 

@@ -23,12 +23,10 @@ namespace BugTracker.API.Commands
         public class RegisterHandler : IRequestHandler<RegisterCommand, RegisterResult>
         {
             private readonly UserManager<ApplicationUser> _userManager;
-            private readonly IAuthorizationService _authorizationService;
 
-            public RegisterHandler(UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService)
+            public RegisterHandler(UserManager<ApplicationUser> userManager)
             {
                 _userManager = userManager;
-                _authorizationService = authorizationService;
             }
 
             public async Task<RegisterResult> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -40,10 +38,7 @@ namespace BugTracker.API.Commands
                 };
                 var result = await _userManager.CreateAsync(user, request.Password);
                 if (result.Succeeded)
-                {
-                    var token = await _authorizationService.AuthorizeAsync(user);
-                    return RegisterResult.CreateSucceeded(token);
-                }
+                    return RegisterResult.CreateSucceeded();
                 return RegisterResult.CreateError(result.Errors.Select(e => e.Description));
             }
         }
