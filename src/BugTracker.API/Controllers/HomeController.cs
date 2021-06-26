@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace BugTracker.API.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public ActionResult Get()
         {
             return Ok(new { Message = "Hello World" });

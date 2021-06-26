@@ -2,10 +2,9 @@ import { useFormik } from "formik";
 import { Form, Button } from "react-bootstrap";
 import * as Yup from 'yup';
 
-export function Login({ callback }) {
+export function Login({ login, error }) {
   const handleSubmit = values => {
-    alert(JSON.stringify(values, null, 2));
-    callback(values.username, values.password);
+    login(values.username, values.password);
   };
   
   const formik = useFormik({
@@ -30,6 +29,7 @@ export function Login({ callback }) {
     <>
       <h3 className="text-center">Login</h3>
       <Form onSubmit={formik.handleSubmit}>
+        {error && <div className="mb-2 text-danger">{error}</div>}
         <Form.Group>
           <Form.Label htmlFor="username">Username:</Form.Label>
           <Form.Control 

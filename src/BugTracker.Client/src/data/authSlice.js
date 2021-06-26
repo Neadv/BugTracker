@@ -1,12 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { loadUser, login } from "../services/authService";
 
+const user = loadUser();
 const authSlice = createSlice({
   name: 'auth',
   initialState: {
     error: null,
+    isAuthorized: user ? true : false,
     loading: false,
-    user: loadUser()
+    user: user
   },
   reducers: {
     startAuthorize(state, action) {
@@ -15,22 +17,21 @@ const authSlice = createSlice({
       }
     },
     authorized(state, action) {
-      if (state.loading) {
-        state.loading = false;
-        state.user = action.payload;
-        state.error = null;
-      }
+      state.loading = false;
+      state.user = action.payload;
+      state.error = null;
+      state.isAuthorized = true;
     },
     authorizeError(state, action) {
-      if (state.loading) {
-        state.loading = false;
-        state.user = null;
-        state.error = action.payload;
-      }
+      state.loading = false;
+      state.user = null;
+      state.error = action.payload;
+      state.isAuthorized = false;
     },
     clearUser(state, action) {
       state.user = null;
       state.error = null;
+      state.isAuthorized = false;
     }
   }
 });
@@ -42,7 +43,7 @@ export const loginUser = (username, password) => (
   async dispatch => {
     dispatch(startAuthorize());
     const result = await login(username, password);
-    if (result.succeeded){
+    if (result.succeeded) {
       dispatch(authorized(result.user));
     } else {
       dispatch(authorizeError(result.error));

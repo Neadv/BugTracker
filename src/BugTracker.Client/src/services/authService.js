@@ -24,6 +24,13 @@ export function login(username, password) {
   })
 }
 
+export function logout() {
+  const token = getToken();
+  return api.post('account/logout', {
+    refreshToken: token.refreshToken
+  });
+}
+
 export function loadUser() {
   setRefreshInterceptor();
   const token = getToken();
@@ -36,23 +43,25 @@ export function loadUser() {
 
 export function setRefreshInterceptor() {
   const interceptor = api.interceptors.response.use(res => res, error => {
-    if (error.response?.status !== 401) {
+    const token = getToken();
+    if (error.response?.status !== 401 || !token) {
       return Promise.reject(error);
     }
 
     api.interceptors.response.eject(interceptor);
 
-    const token = getToken();
     return api.post('account/refresh', {
       expiredToken: token.accessToken,
       refreshToken: token.refreshToken
     }).then(response => {
       saveToken(response.data);
       setAuthorizationHeader(response.data.accessToken);
+      error.response.config.headers['Authorization'] = 'Bearer ' + response.data.accessToken;
       return axios(error.response.config);
     }).catch(error => {
       clearToken();
     }).finally(setRefreshInterceptor);
   });
+
 }
 
