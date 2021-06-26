@@ -7,7 +7,3 @@ export const api = axios.create({
 export const setAuthorizationHeader = (token) => {
     api.defaults.headers = { Authorization: `Bearer ${token}` };
 }
-
-export const clearAuthorizationHeader = () => {
-    api.defaults.headers = {};
-}

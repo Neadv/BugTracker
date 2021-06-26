@@ -3,8 +3,9 @@ import { Login } from './Login';
 import { Card } from 'react-bootstrap';
 import { useAuth } from './authHook';
 import { PrivateRoute } from "../general/PrivateRoute";
-import './Account.scss';
 import { Logout } from './Logout';
+import { Register } from './Register';
+import './Account.scss';
 
 export function Account() {
   const auth = useAuth();
@@ -17,7 +18,9 @@ export function Account() {
               <Route exact path="/account/login">
                 <Login {...auth}/>
               </Route>
-              <Route exact path="/account/register" />
+              <Route exact path="/account/register">
+                <Register />
+              </Route>
               <PrivateRoute exact path="/account/logout" component={Logout} />
               <Route>
                 <Redirect to="/account/login" />

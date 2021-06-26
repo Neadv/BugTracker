@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api, clearAuthorizationHeader, setAuthorizationHeader } from "../api/api";
+import { api, setAuthorizationHeader } from "../api/api";
 import { clearToken, decodeToken, getToken, saveToken } from "./tokenService";
 
 export function login(username, password) {
@@ -15,7 +15,6 @@ export function login(username, password) {
     };
   }).catch(error => {
     clearToken();
-    clearAuthorizationHeader();
     return {
       user: null,
       succeeded: false,

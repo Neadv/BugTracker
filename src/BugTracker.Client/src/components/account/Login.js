@@ -1,6 +1,7 @@
 import { useFormik } from "formik";
 import { Form, Button } from "react-bootstrap";
 import { Redirect } from "react-router";
+import { Link } from "react-router-dom";
 import * as Yup from 'yup';
 
 export function Login({ login, error, isAuthorized, loading }) {
@@ -15,12 +16,8 @@ export function Login({ login, error, isAuthorized, loading }) {
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .max(20, 'Must be 20 characters or less')
-        .min(4, "Must be 4 characters or longer")
         .required('This field is required'),
       password: Yup.string()
-        .max(20, 'Must be 20 characters or less')
-        .min(4, "Must be 4 characters or longer")
         .required('This field is require'),
     }),
     onSubmit: handleSubmit,
@@ -55,6 +52,7 @@ export function Login({ login, error, isAuthorized, loading }) {
           />
           {formik.touched.password && formik.errors.password ? <Form.Text className="text-danger">{formik.errors.password}</Form.Text> : null}
         </Form.Group>
+        <div className="mb-2" style={{fontSize: '0.8em'}}>Don't have an account? <Link to="/account/register">Sign Up</Link></div>
         <Button className="btn-block" type="submit" disabled={loading}>Sign In</Button>
       </Form>
     </>
