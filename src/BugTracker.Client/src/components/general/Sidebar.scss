@@ -1,16 +1,11 @@
 .sidebar{
-    position: sticky;
+    position: fixed;
+    z-index: 999;
     min-width: 250px;
-    max-width: 30%;
     height: 100vh;
     background-color: #fff;
-
-    .sidebar-header{
-        text-align: center;
-        font-size: 22px;
-        font-family: "Open Sans";
-        padding: 10px;
-    }
+    top: 3rem;
+    transition: 0.5s;
 
     ul{
         font-size: 16px;
@@ -44,5 +39,9 @@
         li:last-child{
             border-bottom: 1px solid #ccc;
         }
+    }
+
+    &.hidden{
+        transform: translate(-100%, 0%);
     }
 }
