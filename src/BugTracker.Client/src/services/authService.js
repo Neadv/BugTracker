@@ -1,11 +1,10 @@
 import axios from "axios";
+import { accountLogin, accountLogout, accountRefresh } from "../api/accountApi";
 import { api, setAuthorizationHeader } from "../api/api";
 import { clearToken, decodeToken, getToken, saveToken } from "./tokenService";
 
 export function login(username, password) {
-  return api.post('account/token', {
-    username, password
-  }).then(res => {
+  return accountLogin(username, password).then(res => {
     saveToken(res.data);
     setAuthorizationHeader(res.data.accessToken);
     const user = decodeToken(res.data.accessToken);
@@ -26,9 +25,7 @@ export function login(username, password) {
 export function logout() {
   const token = getToken();
   clearToken();
-  return api.post('account/logout', {
-    refreshToken: token?.refreshToken
-  });
+  return accountLogout(token?.refreshToken);
 }
 
 export function loadUser() {
@@ -50,10 +47,7 @@ export function setRefreshInterceptor() {
 
     api.interceptors.response.eject(interceptor);
 
-    return api.post('account/refresh', {
-      expiredToken: token?.accessToken,
-      refreshToken: token?.refreshToken
-    }).then(response => {
+    return accountRefresh(token?.accessToken, token?.refreshToken).then(response => {
       saveToken(response.data);
       setAuthorizationHeader(response.data.accessToken);
       error.response.config.headers['Authorization'] = 'Bearer ' + response.data.accessToken;

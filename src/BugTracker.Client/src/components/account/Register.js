@@ -3,14 +3,14 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import * as Yup from 'yup';
-import { api } from "../../api/api";
+import { accountRegister } from "../../api/accountApi";
 
 export const Register = () => {
   const [errors, setErrors] = useState([]);
   const [successful, setSuccessful] = useState(false);
 
   const handleSubmit = (values) => {
-    api.post('account/register', { ...values })
+    accountRegister(values.username, values.email, values.password)
       .then(() => setSuccessful(true))
       .catch(error => {
         const status = error.response?.data?.status;

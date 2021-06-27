@@ -3,6 +3,7 @@ import { Account } from "./components/account/Account";
 import { PrivateComponent } from "./components/general/PrivateComponent";
 import { PrivateRoute } from "./components/general/PrivateRoute";
 import { Layout } from "./components/general/Layout";
+import { Profile } from "./components/profile/Profile";
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
             <Switch>
               <Route exact path="/">
                 <PrivateComponent />
+              </Route>
+              <Route exact path="/profile">
+                <Profile />
               </Route>
               <Route>
                 <h1 className="bg-warning text-center text-white m-2 p-2">Not Found</h1>
