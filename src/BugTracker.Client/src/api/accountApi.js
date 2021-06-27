@@ -22,3 +22,10 @@ export const accountLogout = (refreshToken) => (
         refreshToken: refreshToken
     })
 );
+
+export const accountChangePassword = (password, newPassword) => (
+    api.post('account/changePassword', { 
+        password, 
+        newPassword
+    })
+)
