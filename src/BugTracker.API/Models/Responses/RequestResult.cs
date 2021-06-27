@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BugTracker.API.Models.Responses
 {
-    public class RegisterResult
+    public class RequestResult
     {
         public bool Succeeded { get; set; }
         public IEnumerable<string> Errors { get; set; } = Enumerable.Empty<string>();
 
-        public static RegisterResult CreateSucceeded() => new RegisterResult { Succeeded = true };
-        public static RegisterResult CreateError(IEnumerable<string> errors) => new RegisterResult { Succeeded = false, Errors = errors };
+        public static RequestResult CreateSucceeded() => new RequestResult { Succeeded = true };
+        public static RequestResult CreateError(IEnumerable<string> errors) => new RequestResult { Succeeded = false, Errors = errors };
     }
 }

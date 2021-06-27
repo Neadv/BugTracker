@@ -27,7 +27,7 @@ namespace BugTracker.API.Controllers
         {
             var tokenResponse = await _mediator.Send(loginCommand);
             if (tokenResponse == null)
-                return Unauthorized(new { Status = StatusCodes.Status401Unauthorized, Error = "Invalid login or password" } );
+                return Unauthorized(new { Status = StatusCodes.Status401Unauthorized, Error = "Invalid login or password" });
             return Ok(tokenResponse);
         }
 
@@ -61,6 +61,16 @@ namespace BugTracker.API.Controllers
         {
             await _mediator.Send(logoutCommand);
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("changePassword")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.Succeeded)
+                return Ok();
+            return BadRequest(new { Status = StatusCodes.Status400BadRequest, Errors = result.Errors });
         }
     }
 }
