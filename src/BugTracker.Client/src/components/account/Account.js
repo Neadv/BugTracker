@@ -21,7 +21,9 @@ export function Account() {
               <Route exact path="/account/register">
                 <Register />
               </Route>
-              <PrivateRoute exact path="/account/logout" component={Logout} />
+              <PrivateRoute exact path="/account/logout">
+                <Logout />
+              </PrivateRoute>
               <Route>
                 <Redirect to="/account/login" />
               </Route>

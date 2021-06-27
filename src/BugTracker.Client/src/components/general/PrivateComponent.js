@@ -9,11 +9,11 @@ export const PrivateComponent = () => {
     };
 
     return (
-        <>
+        <div>
             <h1>PrivateComponent</h1>
             <Link className="btn btn-primary" to='/account/logout'>Logout</Link>
             <button className="btn btn-primary" onClick={authorizedEndpoint}>Authorized Endpoint</button>
             <div>{message}</div>
-        </>
+        </div>
     );
 }

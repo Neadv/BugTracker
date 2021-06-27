@@ -1,0 +1,30 @@
+.wrapper{
+    flex-basis: 100%;
+}
+
+.header{
+    font-family: 'Open Sans';
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 22px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 1rem 0.5rem 1rem 0px rgba(0,0,0,.175);
+    
+    position: relative;
+    z-index: 999;
+
+    .header-user{
+        color: #4e4e4e;
+        span {
+            color: #000;
+        }
+    }
+
+    .nav-link{
+        padding: 0;
+        font-size: 16px;
+        color: #313131;
+    }
+}
