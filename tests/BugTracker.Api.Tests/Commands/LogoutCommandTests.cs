@@ -1,4 +1,5 @@
 ﻿using BugTracker.API.Commands;
+using BugTracker.API.Models;
 using BugTracker.API.Services;
 using Microsoft.AspNetCore.Http;
 using Moq;
@@ -20,21 +21,22 @@ namespace BugTracker.Api.Tests.Commands
         {
             // Arrange
             var logoutCommand = new LogoutCommand { RefreshToken = refreshToken };
-            var username = "ValidUser";
+            var user = new ApplicationUser();
 
-            var context = new Mock<IHttpContextAccessor>();
-            context.SetupGet(c => c.HttpContext.User.Identity.Name).Returns(username);
+            var userService = new Mock<IUserService>();
+            userService.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(user);
 
             var authService = new Mock<IAuthorizationService>();
-            authService.Setup(a => a.RemoveRefreshToken(username, refreshToken));
+            authService.Setup(a => a.RemoveRefreshToken(refreshToken, user));
 
-            var logoutHandler = new LogoutCommand.LogoutHandler(context.Object, authService.Object);
+            var logoutHandler = new LogoutCommand.LogoutHandler(authService.Object, userService.Object);
 
             // Action
             var result = await logoutHandler.Handle(logoutCommand, new System.Threading.CancellationToken());
 
             // Assert
-            authService.Verify(a => a.RemoveRefreshToken(username, refreshToken), Times.Once());
+            userService.Verify(u => u.GetCurrentUserAsync(), Times.Once());
+            authService.Verify(a => a.RemoveRefreshToken(refreshToken, user), Times.Once());
         }
 
         [Theory]
@@ -44,23 +46,24 @@ namespace BugTracker.Api.Tests.Commands
         {
             // Arrange
             var logoutCommand = new LogoutCommand { RefreshToken = "RefreshToken" };
+            var user = username != null ? new ApplicationUser { UserName = username } : null;
 
-            var context = new Mock<IHttpContextAccessor>();
-            context.SetupGet(c => c.HttpContext.User.Identity.Name).Returns(username);
+            var userService = new Mock<IUserService>();
+            userService.Setup(u => u.GetCurrentUserAsync()).ReturnsAsync(user);
 
             var authService = new Mock<IAuthorizationService>();
-            authService.Setup(a => a.RemoveRefreshToken(username, logoutCommand.RefreshToken));
+            authService.Setup(a => a.RemoveRefreshToken(logoutCommand.RefreshToken, It.IsAny<ApplicationUser>()));
 
-            var logoutHandler = new LogoutCommand.LogoutHandler(context.Object, authService.Object);
+            var logoutHandler = new LogoutCommand.LogoutHandler(authService.Object, userService.Object);
 
             // Action
             var result = await logoutHandler.Handle(logoutCommand, new System.Threading.CancellationToken());
 
             // Assert
             if (username != null)
-                authService.Verify(a => a.RemoveRefreshToken(username, logoutCommand.RefreshToken), Times.Once());
+                authService.Verify(a => a.RemoveRefreshToken(logoutCommand.RefreshToken, user), Times.Once());
             if (username == null)
-                authService.Verify(a => a.RemoveRefreshToken(username, logoutCommand.RefreshToken), Times.Never());
+                authService.Verify(a => a.RemoveRefreshToken(logoutCommand.RefreshToken, It.IsAny<ApplicationUser>()), Times.Never());
         }
     }
 }

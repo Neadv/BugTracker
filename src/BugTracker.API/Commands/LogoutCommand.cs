@@ -1,14 +1,6 @@
-﻿using BugTracker.API.Models;
-using BugTracker.API.Services;
+﻿using BugTracker.API.Services;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,21 +13,19 @@ namespace BugTracker.API.Commands
         public class LogoutHandler : IRequestHandler<LogoutCommand>
         {
             private readonly IAuthorizationService _authorizationService;
-            private readonly IHttpContextAccessor _contextAccessor;
+            private readonly IUserService _userService;
 
-            public LogoutHandler(IHttpContextAccessor contextAccessor, IAuthorizationService authorizationService)
+            public LogoutHandler(IAuthorizationService authorizationService, IUserService userService)
             {
-                _contextAccessor = contextAccessor;
                 _authorizationService = authorizationService;
+                _userService = userService;
             }
 
             public async Task<Unit> Handle(LogoutCommand request, CancellationToken cancellationToken)
             {
-                var userName = _contextAccessor.HttpContext.User?.Identity?.Name;
-                if (userName == null)
-                    return new Unit();
-
-                await _authorizationService.RemoveRefreshToken(userName, request.RefreshToken);
+                var user = await _userService.GetCurrentUserAsync();
+                if (user != null)
+                    await _authorizationService.RemoveRefreshToken(request.RefreshToken, user);
 
                 return new Unit();
             }
