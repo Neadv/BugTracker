@@ -1,10 +1,10 @@
 import { api } from "./api";
 
-export const fetchUserByName = (username) => (
+const fetchUserByName = (username) => (
   api.get('users/' + username)
 );
 
-export const fetchUsers = (activated = true) => (
+const fetchUsers = (activated = true) => (
   api.get('users', {
     params: {
       Activated: activated
@@ -12,14 +12,21 @@ export const fetchUsers = (activated = true) => (
   })
 );
 
-export const deleteUserApi = (username)=> (
+const deleteUser = (username)=> (
   api.delete('users/' + username)
 );
 
-export const createUserApi = (username, email, password) => (
+const createUser = (username, email, password) => (
   api.post('users/', {
     username,
     password,
     email
   })
 );
+
+export const usersApi = {
+  fetchUserByName,
+  fetchUsers,
+  deleteUser,
+  createUser
+}
