@@ -1,4 +1,5 @@
 ﻿using BugTracker.API.Commands;
+using BugTracker.API.Models;
 using BugTracker.API.Services;
 using Moq;
 using System.Threading.Tasks;
@@ -14,7 +15,8 @@ namespace BugTracker.Api.Tests.Commands
             // Arrange
             var username = "Username";
             var userService = new Mock<IUserService>();
-            userService.Setup(u => u.DeleteUserByNameAsync(username)).Returns(Task.CompletedTask);
+            userService.Setup(u => u.GetUserByNameAsync(username)).ReturnsAsync(new ApplicationUser());
+            userService.Setup(u => u.DeleteUser(It.IsAny<ApplicationUser>())).Returns(Task.CompletedTask);
 
             var handler = new DeleteUserCommand.DeleteUserHandler(userService.Object);
 
@@ -22,7 +24,8 @@ namespace BugTracker.Api.Tests.Commands
             await handler.Handle(new DeleteUserCommand { Username = username }, new System.Threading.CancellationToken());
 
             // Assert
-            userService.Verify(u => u.DeleteUserByNameAsync(username), Times.Once());
+            userService.Verify(u => u.GetUserByNameAsync(username), Times.Once());
+            userService.Verify(u => u.DeleteUser(It.IsAny<ApplicationUser>()), Times.Once());
         }
     }
 }

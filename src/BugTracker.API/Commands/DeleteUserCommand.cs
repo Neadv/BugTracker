@@ -1,6 +1,7 @@
 ﻿using BugTracker.API.Services;
 using FluentValidation;
 using MediatR;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,7 +22,11 @@ namespace BugTracker.API.Commands
 
             public async Task<Unit> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
             {
-                await _userService.DeleteUserByNameAsync(request.Username);
+                var user = await _userService.GetUserByNameAsync(request.Username);
+                if (user != null && !user.Roles.Any(r => r.Name == "admin"))
+                {
+                    await _userService.DeleteUser(user);
+                }
                 return new Unit();
             }
         }

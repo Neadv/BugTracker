@@ -17,6 +17,12 @@ export const UsersPage = () => {
     dispatch(fetchUsersAction(isActive));
   }, [dispatch, isActive]);
 
+  useEffect(() => {
+    if (errors){
+      window.scrollTo(0, 0);
+    }
+  }, [errors])
+
   const addUser = (user) => {
     dispatch(createUserAction(user));
   }
@@ -32,7 +38,7 @@ export const UsersPage = () => {
         <option value="unactive">Unactive users</option>
       </select>
       <UsersList users={users} isActive={isActive} 
-        onDelete={(user) => dispatch(deleteUserAction(user.username))} 
+        onDelete={(user) => dispatch(deleteUserAction(user))} 
         onUpdate={(user, isActive) => dispatch(updateUserStatus(user, isActive))} />
     </Wrapper>
   )

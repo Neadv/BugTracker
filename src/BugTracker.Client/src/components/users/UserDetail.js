@@ -18,11 +18,7 @@ export const UserDetail = () => {
 
   return (
     <Wrapper title={`Profile - ${username}`} lg center>
-      {errors && (
-        <ul className="bg-danger m-2 text-white">
-          {errors.map((e, index) => <li key={index} className="p-1">{e}</li>)}
-        </ul>
-      )}
+      {errors && <div className="bg-danger m-2 p-2 text-white rounded">{errors}</div>}
       {!errors && <UserInfo user={user} />}
     </Wrapper>
   )

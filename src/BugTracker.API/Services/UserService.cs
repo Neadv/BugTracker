@@ -58,6 +58,11 @@ namespace BugTracker.API.Services
         public async Task DeleteUserByNameAsync(string username)
         {
             var user = await UserManager.FindByNameAsync(username);
+            await DeleteUser(user);
+        }
+
+        public async Task DeleteUser(ApplicationUser user)
+        {
             if (user != null)
             {
                 await UserManager.DeleteAsync(user);

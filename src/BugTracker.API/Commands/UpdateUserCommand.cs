@@ -28,6 +28,11 @@ namespace BugTracker.API.Commands
                 var user = await _userService.GetUserByNameAsync(request.Username);
                 if (user != null)
                 {
+                    if (user.Roles.Any(r => r.Name == "admin"))
+                    {
+                        return RequestResult.CreateError(new[] { "Forbidden" });
+                    }
+
                     user.Email = request.Email;
                     user.IsActivated = request.IsActivated;
                     var result = await _userService.UserManager.UpdateAsync(user);

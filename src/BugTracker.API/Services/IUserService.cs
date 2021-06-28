@@ -10,6 +10,7 @@ namespace BugTracker.API.Services
         UserManager<ApplicationUser> UserManager { get; }
 
         Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password, bool validatePassword = true);
+        Task DeleteUser(ApplicationUser user);
         Task DeleteUserByNameAsync(string username);
         Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(bool activated = true);
         Task<ApplicationUser> GetCurrentUserAsync();

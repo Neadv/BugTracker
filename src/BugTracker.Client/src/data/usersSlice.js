@@ -83,11 +83,13 @@ export const fetchUsersAction = (isActive = true) => (
   }
 )
 
-export const deleteUserAction = (username) => (
+export const deleteUserAction = (user) => (
   dispatch => {
-    usersApi.deleteUser(username)
-      .then(res => dispatch(deleteUser(username)))
-      .catch(error => dispatch(loadError("Couldn't delete user")));
+    if (!user.roles.includes('admin')) {
+      usersApi.deleteUser(user.username)
+        .then(res => dispatch(deleteUser(user.username)))
+        .catch(error => dispatch(loadError("Couldn't delete user")));
+    }
   }
 )
 
@@ -108,6 +110,6 @@ export const updateUserStatus = (user, isActivated) => (
   dispatch => {
     usersApi.updateUser(user.username, user.email, isActivated)
       .then(res => dispatch(deleteUser(user.username)))
-      .catch(e => dispatch(loadError("Couldn't delete selected user")));
+      .catch(e => dispatch(loadError(e.response?.data?.errors?.join(', '))));
   }
 )
