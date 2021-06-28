@@ -28,7 +28,11 @@ namespace BugTracker.API.Controllers
         [HttpGet("{name}")]
         public async Task<ActionResult> GetByNameAsync(string name)
         {
-            return Ok();
+            var query = new GetUserByNameQuery { Username = name };
+            var result = await _mediator.Send(query);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
 
         [HttpPost]
