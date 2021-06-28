@@ -24,7 +24,7 @@ namespace BugTracker.API.Data
                 var context = services.GetRequiredService<ApplicationContext>();
                 var configuration = services.GetRequiredService<IConfiguration>();
                 var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 if (configuration.GetValue<bool>("SeedData:AutoMigrate"))
                     context.Database.Migrate();
@@ -34,9 +34,11 @@ namespace BugTracker.API.Data
                 var adminPassword = configuration["SeedData:Admin:Password"];
                 if (await userManager.FindByNameAsync(adminName) == null)
                 {
-                    if (!await roleManager.RoleExistsAsync("admin"))
+                    var adminRole = await roleManager.FindByNameAsync("admin");
+                    if (adminRole == null)
                     {
-                        await roleManager.CreateAsync(new IdentityRole { Name = "admin"});
+                        adminRole = new ApplicationRole("admin");
+                        await roleManager.CreateAsync(adminRole);
                     }
                     var admin = new ApplicationUser
                     {
@@ -45,8 +47,8 @@ namespace BugTracker.API.Data
                         IsActivated = true
                     };
                     admin.PasswordHash = userManager.PasswordHasher.HashPassword(admin, adminPassword);
+                    admin.Roles.Add(adminRole);
                     await userManager.CreateAsync(admin);
-                    await userManager.AddToRoleAsync(admin, "admin");
                 }
             }
         }

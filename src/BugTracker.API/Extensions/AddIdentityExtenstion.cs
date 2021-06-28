@@ -9,7 +9,7 @@ namespace BugTracker.API.Extensions
     {
         public static void AddCustomIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<ApplicationUser, IdentityRole>(opts =>
+            services.AddIdentity<ApplicationUser, ApplicationRole>(opts =>
             {
                 opts.User.RequireUniqueEmail = true;
                 opts.Password.RequireDigit = true;

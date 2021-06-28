@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BugTracker.API.Data
 {
-    public class ApplicationContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> opts)
             :base(opts) { }

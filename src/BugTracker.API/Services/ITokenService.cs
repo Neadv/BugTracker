@@ -6,7 +6,7 @@ namespace BugTracker.API.Services
 {
     public interface ITokenService
     {
-        string GenerateJwt(ApplicationUser user, IEnumerable<string> roles = null);
+        string GenerateJwt(ApplicationUser user);
         RefreshToken GenerateRefreshToken();
         ClaimsPrincipal GetPrincipalFromToken(string token);
     }

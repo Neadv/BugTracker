@@ -32,12 +32,12 @@ namespace BugTracker.API.Services
 
         public async Task<ApplicationUser> GetUserByNameAsync(string name)
         {
-            return await UserManager.Users.Where(u => u.UserName == name).Include(u => u.RefreshTokens).FirstOrDefaultAsync();
+            return await UserManager.Users.Where(u => u.UserName == name).Include(u => u.RefreshTokens).Include(u => u.Roles).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(bool activated = true)
         {
-            return await UserManager.Users.Where(u => u.IsActivated == activated).ToListAsync();
+            return await UserManager.Users.Where(u => u.IsActivated == activated).Include(u => u.Roles).ToListAsync();
         }
     }
 }

@@ -18,7 +18,7 @@ namespace BugTracker.API.Services
             _tokenOptions = options.Value;
         }
 
-        public string GenerateJwt(ApplicationUser user, IEnumerable<string> roles = null)
+        public string GenerateJwt(ApplicationUser user)
         {
             var claims = new List<Claim>()
             {
@@ -27,12 +27,9 @@ namespace BugTracker.API.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
             };
-            if (roles != null)
+            foreach (var r in user.Roles)
             {
-                foreach (var r in roles)
-                {
-                    claims.Add(new Claim(ClaimTypes.Role, r));
-                }
+                claims.Add(new Claim(ClaimTypes.Role, r.Name));
             }
 
             var jwt = new JwtSecurityToken(

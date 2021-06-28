@@ -23,8 +23,7 @@ namespace BugTracker.API.Services
             if (user is null)
                 throw new System.ArgumentNullException(nameof(user));
 
-            var roles = await _userService.UserManager.GetRolesAsync(user);
-            var accessToken = _tokenService.GenerateJwt(user, roles);
+            var accessToken = _tokenService.GenerateJwt(user);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             user.RefreshTokens.Add(refreshToken);
