@@ -55,6 +55,8 @@ namespace BugTracker.API.Controllers
         [HttpDelete("{name}")]
         public async Task<ActionResult> DeleteByNameAsync(string name)
         {
+            var command = new DeleteUserCommand { Username = name };
+            await _mediator.Send(command);
             return NoContent();
         }
     }

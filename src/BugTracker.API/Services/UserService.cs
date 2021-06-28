@@ -54,5 +54,14 @@ namespace BugTracker.API.Services
         {
             return await UserManager.Users.Where(u => u.IsActivated == activated).Include(u => u.Roles).ToListAsync();
         }
+
+        public async Task DeleteUserByNameAsync(string username)
+        {
+            var user = await UserManager.FindByNameAsync(username);
+            if (user != null)
+            {
+                await UserManager.DeleteAsync(user);
+            }
+        }
     }
 }
