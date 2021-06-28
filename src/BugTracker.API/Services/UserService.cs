@@ -52,7 +52,7 @@ namespace BugTracker.API.Services
 
         public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(bool activated = true)
         {
-            return await UserManager.Users.Where(u => u.IsActivated == activated).Include(u => u.Roles).ToListAsync();
+            return await UserManager.Users.Where(u => u.IsActivated == activated).Include(u => u.Roles).OrderBy(u => u.UserName).ToListAsync();
         }
 
         public async Task DeleteUserByNameAsync(string username)
