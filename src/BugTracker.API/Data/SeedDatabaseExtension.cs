@@ -41,7 +41,8 @@ namespace BugTracker.API.Data
                     var admin = new ApplicationUser
                     {
                         UserName = adminName,
-                        Email = adminEmail,          
+                        Email = adminEmail,
+                        IsActivated = true
                     };
                     admin.PasswordHash = userManager.PasswordHasher.HashPassword(admin, adminPassword);
                     await userManager.CreateAsync(admin);

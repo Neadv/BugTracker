@@ -34,7 +34,7 @@ namespace BugTracker.API.Commands
             public async Task<TokenResult> Handle(LoginCommand request, CancellationToken cancellationToken)
             {
                 var user = await _userManager.FindByNameAsync(request.Username);
-                if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
+                if (user != null && await _userManager.CheckPasswordAsync(user, request.Password) && user.IsActivated)
                 {
                     return await _authorizationService.AuthorizeAsync(user);
                 }
