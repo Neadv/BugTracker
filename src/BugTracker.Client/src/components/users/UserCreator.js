@@ -1,9 +1,9 @@
 import { useFormik } from "formik"
-import { Form, Row, Link, Col, Button } from "react-bootstrap";
+import { Form, Row, Col, Button } from "react-bootstrap";
 import * as Yup from 'yup';
 import { Wrapper } from "../general/Wrapper";
 
-export const UserCreater = ({ addUser, errors, loading }) => {
+export const UserCreater = ({ addUser, loading }) => {
   const handleSubmit = (values, {resetForm}) => {
     addUser({
       username: values.username,
@@ -37,7 +37,6 @@ export const UserCreater = ({ addUser, errors, loading }) => {
 
   return (
     <Wrapper center title="Create New User">
-      {errors && <div className="m-2 p-2 bg-danger text-white rounded">{errors}</div>}
       <Form onSubmit={formik.handleSubmit}>
         <Form.Group as={Row}>
           <Form.Label column md="2">Username:</Form.Label>

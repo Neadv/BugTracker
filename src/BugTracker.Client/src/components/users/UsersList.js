@@ -1,7 +1,7 @@
 import { Button, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-export const UsersList = ({users, onDelete, isActive, onActive}) => (
+export const UsersList = ({ users, onDelete, isActive, onUpdate }) => (
     <Table striped bordered size="sm">
         <thead>
             <tr>
@@ -20,7 +20,7 @@ export const UsersList = ({users, onDelete, isActive, onActive}) => (
                     <td>
                         <Link to={`/users/${user.username}`} className="btn btn-primary btn-sm mr-1">View</Link>
                         <Button variant="danger" size="sm" onClick={() => onDelete(user)}>Delete</Button>
-                        { !isActive && <Button variant="warning" size="sm" className="ml-1" onCLick={() => onActive(user)}>Activate</Button> }
+                        <Button variant="warning" size="sm" className="ml-1" onClick={() => onUpdate(user, !isActive)}>{isActive ? "Block" : "Activate"}</Button>
                     </td>
                 </tr>
             ))}

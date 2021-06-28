@@ -24,9 +24,18 @@ const createUser = (username, email, password) => (
   })
 );
 
+const updateUser = (username, email, isActivated) => (
+  api.put('users/', {
+    username,
+    email,
+    isActivated
+  })
+);
+
 export const usersApi = {
   fetchUserByName,
   fetchUsers,
   deleteUser,
-  createUser
+  createUser,
+  updateUser
 }

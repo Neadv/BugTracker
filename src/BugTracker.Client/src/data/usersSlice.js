@@ -103,3 +103,11 @@ export const createUserAction = (user) => (
       .catch(error => dispatch(loadError(error.response?.data?.errors?.join(', '))));
   }
 )
+
+export const updateUserStatus = (user, isActivated) => (
+  dispatch => {
+    usersApi.updateUser(user.username, user.email, isActivated)
+      .then(res => dispatch(deleteUser(user.username)))
+      .catch(e => dispatch(loadError("Couldn't delete selected user")));
+  }
+)
