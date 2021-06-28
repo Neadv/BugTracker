@@ -21,20 +21,20 @@ namespace BugTracker.API.Commands
 
         public class LoginHandler : IRequestHandler<LoginCommand, TokenResult>
         {
-            private readonly UserManager<ApplicationUser> _userManager;
+            private readonly IUserService _userService;
             private readonly IAuthorizationService _authorizationService;
 
-            public LoginHandler(UserManager<ApplicationUser> userManager, IAuthorizationService authorizationService)
+            public LoginHandler(IAuthorizationService authorizationService, IUserService userService)
             {
-                _userManager = userManager;
                 _authorizationService = authorizationService;
+                _userService = userService;
             }
 
 
             public async Task<TokenResult> Handle(LoginCommand request, CancellationToken cancellationToken)
             {
-                var user = await _userManager.FindByNameAsync(request.Username);
-                if (user != null && await _userManager.CheckPasswordAsync(user, request.Password) && user.IsActivated)
+                var user = await _userService.GetUserByNameAsync(request.Username);
+                if (user != null && await _userService.UserManager.CheckPasswordAsync(user, request.Password) && user.IsActivated)
                 {
                     return await _authorizationService.AuthorizeAsync(user);
                 }

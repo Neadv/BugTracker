@@ -22,7 +22,9 @@ namespace BugTracker.Api.Tests.Commands
             var userManager = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<ApplicationUser>(), command.Password, command.NewPassword)).ReturnsAsync(IdentityResult.Success);
 
-            var handler = new ChangePasswordCommand.ChangePasswordHandler(userManager.Object, userService.Object);
+            userService.SetupGet(u => u.UserManager).Returns(userManager.Object);
+
+            var handler = new ChangePasswordCommand.ChangePasswordHandler(userService.Object);
 
             // Act
             var result = await handler.Handle(command, new System.Threading.CancellationToken());
@@ -48,7 +50,9 @@ namespace BugTracker.Api.Tests.Commands
             var userManager = new Mock<UserManager<ApplicationUser>>(store.Object, null, null, null, null, null, null, null, null);
             userManager.Setup(u => u.ChangePasswordAsync(It.IsAny<ApplicationUser>(), command.Password, command.NewPassword)).ReturnsAsync(IdentityResult.Failed(new IdentityError()));
 
-            var handler = new ChangePasswordCommand.ChangePasswordHandler(userManager.Object, userService.Object);
+            userService.SetupGet(u => u.UserManager).Returns(userManager.Object);
+
+            var handler = new ChangePasswordCommand.ChangePasswordHandler(userService.Object);
 
             // Act
             var result = await handler.Handle(command, new System.Threading.CancellationToken());

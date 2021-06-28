@@ -9,13 +9,13 @@ namespace BugTracker.API.Services
 {
     public class AuthorizationService : IAuthorizationService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IUserService _userService;
         private readonly ITokenService _tokenService;
 
-        public AuthorizationService(ITokenService tokenService, UserManager<ApplicationUser> userManager)
+        public AuthorizationService(ITokenService tokenService, IUserService userService)
         {
             _tokenService = tokenService;
-            _userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<TokenResult> AuthorizeAsync(ApplicationUser user)
@@ -23,12 +23,12 @@ namespace BugTracker.API.Services
             if (user is null)
                 throw new System.ArgumentNullException(nameof(user));
 
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _userService.UserManager.GetRolesAsync(user);
             var accessToken = _tokenService.GenerateJwt(user, roles);
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             user.RefreshTokens.Add(refreshToken);
-            await _userManager.UpdateAsync(user);
+            await _userService.UserManager.UpdateAsync(user);
 
             return new TokenResult
             {
@@ -39,7 +39,7 @@ namespace BugTracker.API.Services
 
         public async Task<RefreshToken> RemoveRefreshToken(string username, string refreshToken)
         {
-            var user = await _userManager.Users.Where(u => u.UserName == username).Include(u => u.RefreshTokens).FirstOrDefaultAsync();
+            var user = await _userService.GetUserByNameAsync(username);
             if (user != null)
                 return await RemoveRefreshToken(refreshToken, user);
             return null;
@@ -56,7 +56,7 @@ namespace BugTracker.API.Services
             if (refresh != null)
             {
                 user.RefreshTokens.Remove(refresh);
-                await _userManager.UpdateAsync(user);
+                await _userService.UserManager.UpdateAsync(user);
                 return refresh;
             }
             return null;

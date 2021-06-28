@@ -1,6 +1,9 @@
 ﻿using BugTracker.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BugTracker.API.Services
@@ -8,11 +11,11 @@ namespace BugTracker.API.Services
     public class UserService : IUserService
     {
         private readonly IHttpContextAccessor _contextAccessor;
-        private readonly UserManager<ApplicationUser> _userManager;
+        public UserManager<ApplicationUser> UserManager { get; }
 
         public UserService(UserManager<ApplicationUser> userManager, IHttpContextAccessor contextAccessor)
         {
-            _userManager = userManager;
+            UserManager = userManager;
             _contextAccessor = contextAccessor;
         }
 
@@ -24,7 +27,17 @@ namespace BugTracker.API.Services
                 return null;
             }
 
-            return await _userManager.FindByNameAsync(username);
+            return await UserManager.FindByNameAsync(username);
+        }
+
+        public async Task<ApplicationUser> GetUserByNameAsync(string name)
+        {
+            return await UserManager.Users.Where(u => u.UserName == name).Include(u => u.RefreshTokens).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(bool activated = true)
+        {
+            return await UserManager.Users.Where(u => u.IsActivated == activated).ToListAsync();
         }
     }
 }
