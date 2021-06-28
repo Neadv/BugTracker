@@ -6,8 +6,7 @@ const usersSlice = createSlice({
   initialState: {
     loading: false,
     errors: null,
-    message: null,
-    selectedUser: null, 
+    selectedUser: null,
     activeUsers: [],
     unactiveUsers: [],
   },
@@ -21,15 +20,15 @@ const usersSlice = createSlice({
       state.loading = false;
     },
     loadUsers(state, action) {
-      if (action.payload.isActive){
+      if (action.payload.isActive) {
         state.activeUsers = action.payload.users;
-      } else{
+      } else {
         state.unactiveUsers = action.payload.users;
       }
       state.loading = false;
     },
     addUser(state, action) {
-      state.users.push({ ...action.payload.user, isActivated: action.payload.isActivated })
+      state.activeUsers.push(action.payload)
       state.loading = false;
     },
     deleteUser(state, action) {
@@ -60,7 +59,7 @@ const usersSlice = createSlice({
 });
 
 export const usersReducer = usersSlice.reducer;
-export const { startLoading, loadSelectedUser, loadUsers, deleteUser, loadError } = usersSlice.actions;
+export const { startLoading, loadSelectedUser, loadUsers, deleteUser, loadError, addUser } = usersSlice.actions;
 
 export const fetchSelectedUser = (username) => (
   dispatch => {
@@ -89,5 +88,18 @@ export const deleteUserAction = (username) => (
     usersApi.deleteUser(username)
       .then(res => dispatch(deleteUser(username)))
       .catch(error => dispatch(loadError("Couldn't delete user")));
+  }
+)
+
+export const createUserAction = (user) => (
+  dispatch => {
+    dispatch(startLoading());
+    usersApi.createUser(user.username, user.email, user.password)
+      .then(res => dispatch(addUser({
+        username: user.username,
+        email: user.email,
+        roles: []
+      })))
+      .catch(error => dispatch(loadError(error.response?.data?.errors?.join(', '))));
   }
 )
