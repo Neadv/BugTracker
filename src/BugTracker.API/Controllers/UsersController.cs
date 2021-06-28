@@ -21,7 +21,7 @@ namespace BugTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetAllAsync([FromQuery]GetUsersQuery getUsers)
+        public async Task<ActionResult> GetAllAsync([FromQuery] GetUsersQuery getUsers)
         {
             var result = await _mediator.Send(getUsers);
             return Ok(result);
@@ -54,6 +54,16 @@ namespace BugTracker.API.Controllers
             var command = new DeleteUserCommand { Username = name };
             await _mediator.Send(command);
             return NoContent();
+        }
+
+        [HttpPut]
+        [Authorize(Policy = "ProjectManage")]
+        public async Task<ActionResult> UpdateAsync(UpdateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.Succeeded)
+                return Ok();
+            return Conflict(new { Status = StatusCodes.Status409Conflict, Errors = result.Errors });
         }
     }
 }
