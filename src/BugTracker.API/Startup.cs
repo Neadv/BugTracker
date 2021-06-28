@@ -44,6 +44,8 @@ namespace BugTracker.API
             services.AddCustomIdentity();
             services.AddJwtAuthentication(Configuration);
 
+            services.AddAutoMapper(typeof(Startup).Assembly);
+
             services.AddMediatR(typeof(Startup).Assembly);
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
