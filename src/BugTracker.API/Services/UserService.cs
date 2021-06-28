@@ -30,6 +30,21 @@ namespace BugTracker.API.Services
             return await UserManager.FindByNameAsync(username);
         }
 
+        public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password, bool validatePassword = true)
+        {
+            IdentityResult result;
+            if (validatePassword)
+            {
+                result = await UserManager.CreateAsync(user, password);
+            }
+            else
+            {
+                user.PasswordHash = UserManager.PasswordHasher.HashPassword(user, password);
+                result = await UserManager.CreateAsync(user);
+            }
+            return result;
+        }
+
         public async Task<ApplicationUser> GetUserByNameAsync(string name)
         {
             return await UserManager.Users.Where(u => u.UserName == name).Include(u => u.RefreshTokens).Include(u => u.Roles).FirstOrDefaultAsync();

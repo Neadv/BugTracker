@@ -9,6 +9,7 @@ namespace BugTracker.API.Services
     {
         UserManager<ApplicationUser> UserManager { get; }
 
+        Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password, bool validatePassword = true);
         Task<IEnumerable<ApplicationUser>> GetAllUsersAsync(bool activated = true);
         Task<ApplicationUser> GetCurrentUserAsync();
         Task<ApplicationUser> GetUserByNameAsync(string name);

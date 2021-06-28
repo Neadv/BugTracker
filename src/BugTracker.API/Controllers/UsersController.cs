@@ -1,6 +1,8 @@
-﻿using BugTracker.API.Models;
+﻿using BugTracker.API.Commands;
+using BugTracker.API.Models;
 using BugTracker.API.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,9 +38,12 @@ namespace BugTracker.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateAsync()
+        public async Task<ActionResult> CreateAsync(CreateUserCommand command)
         {
-            return Ok();
+            var result = await _mediator.Send(command);
+            if (result.Succeeded)
+                return Created("api/users/" + result.Model.Username, result.Model);
+            return Conflict(new { Status = StatusCodes.Status409Conflict, Errors = result.Errors });
         }
 
         [HttpPut]
