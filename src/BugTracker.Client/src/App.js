@@ -4,6 +4,7 @@ import { PrivateComponent } from "./components/general/PrivateComponent";
 import { PrivateRoute } from "./components/general/PrivateRoute";
 import { Layout } from "./components/general/Layout";
 import { Profile } from "./components/profile/Profile";
+import { Users } from "./components/users/Users";
 
 function App() {
   return (
@@ -17,6 +18,9 @@ function App() {
             <Switch>
               <Route exact path="/">
                 <PrivateComponent />
+              </Route>
+              <Route path="/users">
+                <Users />
               </Route>
               <Route exact path="/profile">
                 <Profile />
