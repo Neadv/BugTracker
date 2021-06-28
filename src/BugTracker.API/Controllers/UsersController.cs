@@ -1,15 +1,15 @@
 ﻿using BugTracker.API.Commands;
-using BugTracker.API.Models;
 using BugTracker.API.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace BugTracker.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
@@ -38,6 +38,7 @@ namespace BugTracker.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "ProjectManage")]
         public async Task<ActionResult> CreateAsync(CreateUserCommand command)
         {
             var result = await _mediator.Send(command);
@@ -46,13 +47,8 @@ namespace BugTracker.API.Controllers
             return Conflict(new { Status = StatusCodes.Status409Conflict, Errors = result.Errors });
         }
 
-        [HttpPut]
-        public async Task<ActionResult> UpdateAsync()
-        {
-            return Ok();
-        }
-
         [HttpDelete("{name}")]
+        [Authorize(Policy = "Admins")]
         public async Task<ActionResult> DeleteByNameAsync(string name)
         {
             var command = new DeleteUserCommand { Username = name };

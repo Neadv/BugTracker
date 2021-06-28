@@ -43,6 +43,7 @@ namespace BugTracker.API
 
             services.AddCustomIdentity();
             services.AddJwtAuthentication(Configuration);
+            services.AddPolicyAthurization();
 
             services.AddAutoMapper(typeof(Startup).Assembly);
 
